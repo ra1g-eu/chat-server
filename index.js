@@ -1,6 +1,5 @@
 const express = require('express');
 const http = require('http');
-//const WebSocket = require('ws');
 const mysql = require('mysql2/promise');
 const app = express();
 const server = http.createServer(app);
@@ -24,7 +23,6 @@ const twchatCache = new NodeCache({stdTTL: 43200, checkperiod: 43260});
 
 const gerUserNameByUserToken = async (userToken) => {
     try {
-        // Get a connection from the pool
         const connection = await pool.getConnection();
 
         // Execute the SQL query
@@ -35,8 +33,6 @@ const gerUserNameByUserToken = async (userToken) => {
             'WHERE us.user_token = ?',
             [userToken]
         );
-
-        // Release the connection back to the pool
         connection.release();
 
         if (rows.length === 0) {
@@ -49,10 +45,6 @@ const gerUserNameByUserToken = async (userToken) => {
     }
 }
 
-//const wss = new WebSocket.Server({ server });
-
-// Store WebSocket clients and user tokens
-//const clients = new Map();
 io.on('connection', async (socket) => {
     console.log("connected");
     const gameWorld = socket.handshake.query.gameWorld;
@@ -103,53 +95,6 @@ io.on('connection', async (socket) => {
         io.emit("twchatReceiveMessage", msg);
     });
 });
-// Middleware to check user token on WebSocket connection
-// wss.on('connection', (ws, req) => {
-//
-//     const userToken = new URLSearchParams(req.url).get('/?user_token');
-//
-//     if (!userToken) {
-//         // Close the WebSocket connection if no token is provided
-//         ws.close();
-//         return;
-//     }
-//
-//     // Store the WebSocket client with the user token as the key
-//     clients.set(userToken, ws);
-//
-//     // Handle incoming WebSocket messages
-//     ws.on('message', (message) => {
-//         // Parse the message JSON
-//         let parsedMessage;
-//         try {
-//             parsedMessage = JSON.parse(message);
-//         } catch (error) {
-//             console.error('Error parsing message:', error);
-//             return;
-//         }
-//
-//         // Check if the message includes the user token
-//         const { userToken: messageToken, content } = parsedMessage;
-//         if (messageToken !== userToken) {
-//             console.error('Invalid user token in message');
-//             return;
-//         }
-//
-//         // Broadcast the message to all clients in the general room
-//         wss.clients.forEach((client) => {
-//             if (client !== wss && client.readyState === WebSocket.OPEN) {
-//                 client.send(content);
-//             }
-//         });
-//     });
-//
-//     // Handle WebSocket disconnection
-//     ws.on('close', () => {
-//         // Remove the WebSocket client from the map when disconnected
-//         clients.delete(userToken);
-//     });
-// });
-
 app.get('/', (req, res) => {
     res.send('WebSocket server is running');
 });
