@@ -10,10 +10,10 @@ const io = new Server(server, {
     }
 });
 const pool = mysql.createPool({
-    host: 'db-mysql-fra1-25366-do-user-14765642-0.b.db.ondigitalocean.com',
-    user: 'doadmin',
-    password: 'AVNS_AlOR6j8FxABOCrAM0b4',
-    database: 'twchatextended',
+    host: '',
+    user: '',
+    password: '',
+    database: '',
     port: 25060,
     waitForConnections: true,
     connectionLimit: 10,
